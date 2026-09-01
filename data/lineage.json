@@ -1,0 +1,33 @@
+{
+  "source": "Seattle Airbnb Open Data (Kaggle: airbnb/seattle)",
+  "layers": {
+    "L0_atomic": {
+      "l0_listing": "one row per listing; money and percent strings cast to numeric",
+      "l0_calendar": "one row per listing-night; available 't'/'f' -> is_booked bool",
+      "l0_review": "one row per review; VADER compound sentiment, English-only",
+      "l0_amenity": "amenities set exploded to one row per (listing, amenity)",
+      "l0_host_verification": "host_verifications list exploded per (host, method)"
+    },
+    "L1_aggregate": {
+      "l1_listing_month": "listing x month: blocked_rate, asking_adr, revpan_proxy",
+      "l1_neighbourhood_week": "neighbourhood x week: occupancy, ADR, RevPAN",
+      "l1_review_month": "listing x month: review volume, mean sentiment"
+    },
+    "L2_kpi": {
+      "l2_kpi_neighbourhood": "supply + demand + voice per neighbourhood",
+      "l2_kpi_market": "city-wide weekly occupancy / ADR / RevPAN",
+      "l2_listing_scorecard": "per-listing KPI roll-up for ranking and drill-down",
+      "l2_amenity_penetration": "amenity share of listings by neighbourhood group"
+    }
+  },
+  "known_limitations": [
+    "calendar.price is populated ONLY on available=='t' nights (934,542) and is null on all 459,028 unavailable nights -- it is an asking price on open nights, never a transacted rate. Realised revenue is NOT derivable; no revenue column is emitted.",
+    "calendar 'f' conflates guest-booked with host-blocked, so blocked_rate is an UPPER BOUND on true occupancy, not a measurement of it",
+    "revpan_proxy = asking_adr * blocked_rate is a comparative index, not a currency amount",
+    "asking_adr is null for 13,519 of 49,634 listing-months where the listing was blocked all month and quoted no price",
+    "review dates (2009-06-07..2016-01-03) do not overlap calendar (2016-01-04..2017-01-02)",
+    "review velocity is a demand proxy: only a minority of stays leave a review",
+    "VADER is English-only and lexicon-based; non-English reviews are nulled, not translated",
+    "listing attributes are a single 2016-01-04 scrape, so they are not time-varying"
+  ]
+}
